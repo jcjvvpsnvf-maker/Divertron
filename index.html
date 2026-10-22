@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Divertron - Encuesta y Rasca</title>
+    
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --azul-oscuro: #113a7b;
+        --azul-claro: #008cc9;
+        --rojo-divertron: #e31837;
+        --amarillo-divertron: #fdb913;
+        --crema-fondo: #fff9cc;
+        --blanco: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #0d1b2a; 
+        display: flex;
+        justify-content: center; 
+        min-height: 100vh;
+    }
+
+    .app-wrapper {
+        width: 100%;
+        max-width: 500px; 
+        background: linear-gradient(180deg, #008cc9 0%, var(--azul-oscuro) 40%, var(--azul-oscuro) 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 15px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .logo-top {
+        width: 180px;
+        margin-bottom: 20px;
+        z-index: 2;
+        object-fit: contain;
+    }
+
+    .form-paper {
+        background-color: var(--crema-fondo);
+        width: 100%;
+        border-radius: 25px;
+        padding: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+        margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 15px; }
+    .form-group label {
+        display: block;
+        font-family: 'Fredoka', sans-serif;
+        color: var(--azul-oscuro);
+        font-weight: 700;
+        margin-bottom: 5px;
+        font-size: 16px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 16px;
+        background-color: #fff;
+        outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        border-color: var(--azul-claro);
+    }
+    .form-group textarea {
+        resize: vertical;
+        min-height: 60px;
+    }
+
+    .btn-enviar {
+        display: block;
+        width: 100%;
+        margin: 20px auto 0 auto;
+        background-color: var(--rojo-divertron);
+        color: var(--blanco);
+        border: 3px solid var(--blanco);
+        padding: 15px 20px;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        border-radius: 15px;
+        box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        text-transform: uppercase;
+        text-align: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .btn-enviar:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+    .btn-enviar:disabled { background-color: #999; cursor: not-allowed; }
+
+    .scratch-section {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        z-index: 2;
+        margin-bottom: 40px;
+    }
+
+    .thanks-text {
+        text-align: center;
+        color: var(--blanco);
+        font-size: 16px;
+        font-family: 'Fredoka', sans-serif;
+        margin-bottom: 15px;
+    }
+
+    .scratch-title {
+        text-align: center;
+        color: var(--blanco);
+        font-family: 'Bangers', cursive;
+        font-size: 38px;
+        letter-spacing: 2px;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        text-shadow: 3px 3px 0 #000;
+    }
+
+    .scratch-container {
+        position: relative;
+        width: 100%;
+        max-width: 340px;
+        height: 220px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        border: 4px solid var(--blanco);
+        background-color: var(--blanco);
+        margin-bottom: 15px;
+    }
+
+    .prize-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 10px;
+        background: var(--blanco);
+    }
+
+    .prize-content img { width: 70px; margin-bottom: 5px; }
+
+    .prize-text {
+        font-size: 26px;
+        color: #009fe3;
+        font-family: 'Bangers', cursive;
+        letter-spacing: 1px;
+        line-height: 1.1;
+        text-transform: uppercase;
+    }
+
+    .staff-text {
+        color: var(--blanco);
+        font-size: 16px;
+        font-family: 'Fredoka', sans-serif;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: crosshair;
+        touch-action: none;
+    }
+</style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <img src="logo.png" alt="Divertron" class="logo-top" onerror="this.style.display='none'">
+
+        <div class="form-paper" id="formularioBox">
+            
+            <!-- ⚠️ CAMBIA LA URL Y LOS ENTRY POR LOS DE TU NUEVO FORMULARIO -->
+            <form id="divertronForm" action="https://docs.google.com/forms/u/0/d/e/TU_NUEVO_ID_AQUI/formResponse" method="POST" target="hidden_iframe" onsubmit="enviarFormulario()">
+                
+                <div class="form-group">
+                    <label>1. ¿Cómo calificas tu experiencia hoy?</label>
+                    <select name="entry.111111111" required> 
+                        <option value="">Selecciona una opción</option>
+                        <option value="😍 ¡Me encantó! (Excelente)">😍 ¡Me encantó!</option>
+                        <option value="😃 Muy bueno">😃 Muy bueno</option>
+                        <option value="🙂 Bueno">🙂 Bueno</option>
+                        <option value="😐 Regular">😐 Regular</option>
+                        <option value="🙁 Malo">🙁 Malo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>2. ¿Cuál fue tu atracción o juego favorito?</label>
+                    <select name="entry.222222222" required>
+                        <option value="">Selecciona un juego</option>
+                        <option value="🏎️ Moto GP / Karts">🏎️ Moto GP / Karts</option>
+                        <option value="🏀 Basketball">🏀 Basketball</option>
+                        <option value="🦖 Diverjump / Tranpolín">🦖 Diverjump / Tranpolín</option>
+                        <option value="🎯 Air Hockey">🎯 Air Hockey</option>
+                        <option value="🕹️ Videojuegos (Terminator, etc)">🕹️ Videojuegos</option>
+                        <option value="🎠 Carrusel / Atracciones infantiles">🎠 Carrusel / Infantiles</option>
+                        <option value="🎳 Otra">🎳 Otra</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>3. ¿Qué podríamos mejorar? (Opcional)</label>
+                    <textarea name="entry.333333333" placeholder="Escribe aquí tu recomendación..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Encuesta y Jugar</button>
+            </form>
+
+            <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){mostrarRasca()}"></iframe>
+        </div>
+
+        <div class="scratch-section" id="rascaBox">
+            <p class="thanks-text">¡Gracias por participar!</p>
+            
+            <h1 class="scratch-title">¡RASCA Y DESCUBRE<br>UNA SORPRESA!</h1>
+
+            <div class="scratch-container">
+                <div class="prize-content">
+                    <img src="leon.png" alt="León" onerror="this.style.display='none'">
+                    <div class="prize-text" id="prizeText">Cargando...</div>
+                </div>
+                <canvas id="scratchCanvas"></canvas>
+            </div>
+
+            <p class="staff-text" id="staffText" style="display: none;">Muéstralo a nuestro<br>staff para hacerlo válido</p>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // LISTA DE PREMIOS Y PROBABILIDADES
+        // ==========================================
+        // El número "peso" indica la probabilidad. 
+        // Mayor peso = sale más seguido. Menor peso = sale muy rara vez.
+        const premios = [
+            // Premios comunes (Súper probables)
+            { texto: "¡GANASTE 5 DIVERPUNTOS!", peso: 40 },
+            { texto: "¡GANASTE 10 DIVERPUNTOS!", peso: 30 },
+            { texto: "¡GANASTE 15 DIVERPUNTOS!", peso: 20 },
+            { texto: "¡GANASTE 20 DIVERPUNTOS!", peso: 15 },
+            
+            // Premios medios (Salen de vez en cuando)
+            { texto: "¡GANASTE UNA PARTIDA GRATIS EN TU JUEGO FAVORITO!", peso: 10 },
+            { texto: "¡GANASTE 50 DIVERPUNTOS!", peso: 8 },
+            { texto: "¡GANASTE UN STICKER SORPRESA!", peso: 6 },
+            
+            // Premios grandes (Raros)
+            { texto: "¡GANASTE 100 DIVERPUNTOS!", peso: 4 },
+            { texto: "¡GANASTE UN DULCE SORPRESA!", peso: 3 },
+            { texto: "¡GANASTE DOBLE TURNO EN TU ATRACCIÓN FAVORITA!", peso: 2 },
+            
+            // Premios épicos (Súper raros, casi imposibles)
+            { texto: "¡GANASTE 200 DIVERPUNTOS!", peso: 1 },
+            { texto: "¡GANASTE UNA RECARGA DE $5.000!", peso: 0.8 },
+            { texto: "¡GANASTE UNA RECARGA DE $10.000!", peso: 0.4 },
+            { texto: "¡GANASTE UN DIVERCUMPLEAÑOS SORPRESA!", peso: 0.1 }
+        ];
+
+        function elegirPremio() {
+            // Sumamos todos los pesos
+            const totalPeso = premios.reduce((sum, premio) => sum + premio.peso, 0);
+            
+            // Generamos un número aleatorio
+            let random = Math.random() * totalPeso;
+            
+            // Buscamos qué premio cae en ese número
+            for (let i = 0; i < premios.length; i++) {
+                random -= premios[i].peso;
+                if (random <= 0) {
+                    document.getElementById('prizeText').innerText = premios[i].texto;
+                    return;
+                }
+            }
+            document.getElementById('prizeText').innerText = premios[0].texto;
+        }
+
+        elegirPremio(); 
+
+        // ==========================================
+        // LÓGICA DEL FORMULARIO Y RASCA
+        // ==========================================
+        let submitted = false;
+
+        function enviarFormulario() {
+            submitted = true;
+            document.getElementById('btnEnviar').innerText = "Cargando...";
+            document.getElementById('btnEnviar').style.backgroundColor = "#fdb913";
+            document.getElementById('btnEnviar').style.color = "#113a7b";
+        }
+
+        let juegoIniciado = false;
+
+        function mostrarRasca() {
+            if (submitted) {
+                document.getElementById('formularioBox').style.display = 'none';
+                document.getElementById('rascaBox').style.display = 'flex';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                if (!juegoIniciado) {
+                    inicializarCanvas();
+                    juegoIniciado = true;
+                }
+            }
+        }
+
+        const canvas = document.getElementById('scratchCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.querySelector('.scratch-container');
+        let isDrawing = false;
+
+        function inicializarCanvas() {
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+            
+            ctx.fillStyle = '#b0b5c0'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#7a808f';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('RASPA AQUÍ', canvas.width/2, canvas.height/2 + 10);
+            ctx.font = '40px Arial';
+            ctx.fillText('👆', canvas.width/2, canvas.height/2 - 30);
+
+            ctx.globalCompositeOperation = 'destination-out';
+        }
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const { x, y } = getCoordinates(e);
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            checkScratchPercentage();
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mousemove', scratch);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, { passive: false });
+        canvas.addEventListener('touchmove', scratch, { passive: false });
+        canvas.addEventListener('touchend', () => isDrawing = false);
+
+        function checkScratchPercentage() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            let transparentPixels = 0;
+            
+            for (let i = 3; i < pixels.length; i += 4) {
+                if (pixels[i] < 128) transparentPixels++;
+            }
+            
+            const totalPixels = pixels.length / 4;
+            const percentage = (transparentPixels / totalPixels) * 100;
+
+            if (percentage > 40) {
+                revealAll();
+            }
+        }
+
+        function revealAll() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.pointerEvents = 'none';
+            
+            // Mostramos el texto para que le muestre al staff
+            document.getElementById('staffText').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
