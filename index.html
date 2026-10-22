@@ -201,14 +201,15 @@
 
         <div class="form-paper" id="formularioBox">
             
-            <!-- ⚠️ CAMBIA LA URL Y LOS ENTRY POR LOS DE TU NUEVO FORMULARIO -->
-            <form id="divertronForm" action="https://docs.google.com/forms/u/0/d/e/TU_NUEVO_ID_AQUI/formResponse" method="POST" target="hidden_iframe" onsubmit="enviarFormulario()">
+            <!-- URL oficial de tu formulario -->
+            <form id="divertronForm" action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfcRUMefZcRch-YnSEb-brGSzWq24BErRy7ibCvMVN4Dl4WCg/formResponse" method="POST" target="hidden_iframe" onsubmit="enviarFormulario()">
                 
+                <!-- PREGUNTA 1 (Opciones exactas) -->
                 <div class="form-group">
                     <label>1. ¿Cómo calificas tu experiencia hoy?</label>
-                    <select name="entry.111111111" required> 
+                    <select name="entry.979314667" required> 
                         <option value="">Selecciona una opción</option>
-                        <option value="😍 ¡Me encantó! (Excelente)">😍 ¡Me encantó!</option>
+                        <option value="😍 ¡Me encantó!">😍 ¡Me encantó!</option>
                         <option value="😃 Muy bueno">😃 Muy bueno</option>
                         <option value="🙂 Bueno">🙂 Bueno</option>
                         <option value="😐 Regular">😐 Regular</option>
@@ -216,23 +217,26 @@
                     </select>
                 </div>
 
+                <!-- PREGUNTA 2 (Opciones exactas) -->
                 <div class="form-group">
                     <label>2. ¿Cuál fue tu atracción o juego favorito?</label>
-                    <select name="entry.222222222" required>
+                    <select name="entry.1071558147" required>
                         <option value="">Selecciona un juego</option>
                         <option value="🏎️ Moto GP / Karts">🏎️ Moto GP / Karts</option>
-                        <option value="🏀 Basketball">🏀 Basketball</option>
+                        <option value="🏀 Basketball (Shooting Hoops)">🏀 Basketball (Shooting Hoops)</option>
                         <option value="🦖 Diverjump / Tranpolín">🦖 Diverjump / Tranpolín</option>
                         <option value="🎯 Air Hockey">🎯 Air Hockey</option>
-                        <option value="🕹️ Videojuegos (Terminator, etc)">🕹️ Videojuegos</option>
-                        <option value="🎠 Carrusel / Atracciones infantiles">🎠 Carrusel / Infantiles</option>
+                        <option value="🕹️ Videojuegos">🕹️ Videojuegos</option>
+                        <option value="🎠 Carrusel / Atracciones infantiles">🎠 Carrusel / Atracciones infantiles</option>
                         <option value="🎳 Otra">🎳 Otra</option>
                     </select>
                 </div>
 
+                <!-- PREGUNTA 3 (Opcional) -->
                 <div class="form-group">
-                    <label>3. ¿Qué podríamos mejorar? (Opcional)</label>
-                    <textarea name="entry.333333333" placeholder="Escribe aquí tu recomendación..."></textarea>
+                    <label>3. ¿Qué podríamos mejorar o recomendarnos? (Opcional)</label>
+                    <!-- Usamos el entry de la pregunta 3 -->
+                    <textarea name="entry.1078731805" placeholder="Escribe aquí tu recomendación..."></textarea>
                 </div>
 
                 <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Encuesta y Jugar</button>
@@ -241,6 +245,7 @@
             <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){mostrarRasca()}"></iframe>
         </div>
 
+        <!-- SECCIÓN RASCA Y GANA -->
         <div class="scratch-section" id="rascaBox">
             <p class="thanks-text">¡Gracias por participar!</p>
             
@@ -260,28 +265,19 @@
 
     <script>
         // ==========================================
-        // LISTA DE PREMIOS Y PROBABILIDADES
+        // PREMIOS Y PROBABILIDADES
         // ==========================================
-        // El número "peso" indica la probabilidad. 
-        // Mayor peso = sale más seguido. Menor peso = sale muy rara vez.
         const premios = [
-            // Premios comunes (Súper probables)
             { texto: "¡GANASTE 5 DIVERPUNTOS!", peso: 40 },
             { texto: "¡GANASTE 10 DIVERPUNTOS!", peso: 30 },
             { texto: "¡GANASTE 15 DIVERPUNTOS!", peso: 20 },
             { texto: "¡GANASTE 20 DIVERPUNTOS!", peso: 15 },
-            
-            // Premios medios (Salen de vez en cuando)
             { texto: "¡GANASTE UNA PARTIDA GRATIS EN TU JUEGO FAVORITO!", peso: 10 },
             { texto: "¡GANASTE 50 DIVERPUNTOS!", peso: 8 },
             { texto: "¡GANASTE UN STICKER SORPRESA!", peso: 6 },
-            
-            // Premios grandes (Raros)
             { texto: "¡GANASTE 100 DIVERPUNTOS!", peso: 4 },
             { texto: "¡GANASTE UN DULCE SORPRESA!", peso: 3 },
             { texto: "¡GANASTE DOBLE TURNO EN TU ATRACCIÓN FAVORITA!", peso: 2 },
-            
-            // Premios épicos (Súper raros, casi imposibles)
             { texto: "¡GANASTE 200 DIVERPUNTOS!", peso: 1 },
             { texto: "¡GANASTE UNA RECARGA DE $5.000!", peso: 0.8 },
             { texto: "¡GANASTE UNA RECARGA DE $10.000!", peso: 0.4 },
@@ -289,13 +285,8 @@
         ];
 
         function elegirPremio() {
-            // Sumamos todos los pesos
             const totalPeso = premios.reduce((sum, premio) => sum + premio.peso, 0);
-            
-            // Generamos un número aleatorio
             let random = Math.random() * totalPeso;
-            
-            // Buscamos qué premio cae en ese número
             for (let i = 0; i < premios.length; i++) {
                 random -= premios[i].peso;
                 if (random <= 0) {
@@ -309,7 +300,7 @@
         elegirPremio(); 
 
         // ==========================================
-        // LÓGICA DEL FORMULARIO Y RASCA
+        // ENVÍO Y DESBLOQUEO
         // ==========================================
         let submitted = false;
 
@@ -335,6 +326,9 @@
             }
         }
 
+        // ==========================================
+        // RASCA Y GANA (CANVAS)
+        // ==========================================
         const canvas = document.getElementById('scratchCanvas');
         const ctx = canvas.getContext('2d');
         const container = document.querySelector('.scratch-container');
@@ -406,7 +400,6 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             canvas.style.pointerEvents = 'none';
             
-            // Mostramos el texto para que le muestre al staff
             document.getElementById('staffText').style.display = 'block';
         }
     </script>
